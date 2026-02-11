@@ -36,3 +36,4 @@ data/processed/
 
 # Build
 build/
+.vercel
