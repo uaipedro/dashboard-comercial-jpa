@@ -22,3 +22,17 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Data
+data/raw/*.xlsb
+data/raw/*.xlsm
+data/raw/*.xlsx
+data/processed/
+
+# Build
+build/
