@@ -165,9 +165,15 @@ export function Dashboard() {
                   data={produtoDistribuicao}
                   cx="50%"
                   cy="50%"
-                  labelLine={false}
-                  label={(entry: any) => `${entry.produto} (${formatPercent(entry.participacao, 1)})`}
-                  outerRadius={80}
+                  labelLine={true}
+                  label={(entry: any) => {
+                    // Só mostrar label se participação > 2%
+                    if (entry.participacao > 2) {
+                      return `${entry.produto}\n(${formatPercent(entry.participacao, 1)})`
+                    }
+                    return ''
+                  }}
+                  outerRadius={90}
                   fill="#8884d8"
                   dataKey="participacao"
                 >
@@ -175,7 +181,20 @@ export function Dashboard() {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip 
+                  contentStyle={{
+                    backgroundColor: '#fff',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '0.625rem'
+                  }}
+                />
+                <Legend 
+                  verticalAlign="bottom"
+                  height={36}
+                  formatter={(_value, entry: any) => 
+                    `${entry.payload.produto} (${formatPercent(entry.payload.participacao, 1)})`
+                  }
+                />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>
