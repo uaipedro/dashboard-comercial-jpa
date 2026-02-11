@@ -1,25 +1,74 @@
 @import "tailwindcss";
 
-@theme {
-  --color-primary: #3b82f6;
-  --color-primary-foreground: #f8fafc;
-  --color-secondary: #64748b;
-  --color-secondary-foreground: #f1f5f9;
-  --color-accent: #22c55e;
-  --color-muted: #94a3b8;
-  --color-background: #ffffff;
-  --color-foreground: #0f172a;
-  --color-border: #e2e8f0;
-  --radius-sm: 0.25rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+}
+
+:root {
+  /* Brand palette JPA */
+  --brand-primary: #ff6b35;
+  --brand-primary-strong: #e55a2b;
+  --brand-primary-foreground: #ffffff;
+  --brand-success: #2d5a3d;
+  --brand-success-foreground: #ffffff;
+
+  --radius: 0.625rem;
+  --background: #fafbfc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --primary: var(--brand-primary);
+  --primary-foreground: var(--brand-primary-foreground);
+  --secondary: #f1f5f9;
+  --secondary-foreground: #475569;
+  --success: var(--brand-success);
+  --success-foreground: var(--brand-success-foreground);
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #f8fafc;
+  --accent-foreground: #1e293b;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0;
+  --input: #f8fafc;
+  --ring: #f26522;
+  --chart-1: var(--brand-primary);
+  --chart-2: var(--brand-success);
+  --chart-3: #1d4ed8;
+  --chart-4: #9333ea;
+  --chart-5: #f59e0b;
 }
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border outline-ring/50;
   }
-  
   body {
     @apply bg-background text-foreground antialiased;
   }
