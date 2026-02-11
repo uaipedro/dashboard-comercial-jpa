@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Header } from './components/layout/Header'
 import { LoginPage } from './components/auth/LoginPage'
 import { Dashboard } from './pages/dashboard/Dashboard'
+import { Clientes } from './pages/clientes/Clientes'
+import { Produtos } from './pages/produtos/Produtos'
+import { Vendedores } from './pages/vendedores/Vendedores'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -43,9 +46,9 @@ function App() {
         <main className="container mx-auto">
           <Routes>
             <Route path="/" element={<Dashboard />} />
-            <Route path="/clientes" element={<div className="p-8"><h1 className="text-2xl font-bold">Clientes</h1><p className="text-muted-foreground">Em desenvolvimento...</p></div>} />
-            <Route path="/produtos" element={<div className="p-8"><h1 className="text-2xl font-bold">Produtos</h1><p className="text-muted-foreground">Em desenvolvimento...</p></div>} />
-            <Route path="/vendedores" element={<div className="p-8"><h1 className="text-2xl font-bold">Vendedores</h1><p className="text-muted-foreground">Em desenvolvimento...</p></div>} />
+            <Route path="/clientes" element={<Clientes />} />
+            <Route path="/produtos" element={<Produtos />} />
+            <Route path="/vendedores" element={<Vendedores />} />
           </Routes>
         </main>
       </div>

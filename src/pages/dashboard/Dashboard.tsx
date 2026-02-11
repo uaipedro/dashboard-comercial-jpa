@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Users, Package, DollarSign, Percent } from 'lucide-react'
 import { formatCurrency, formatNumber, formatPercent } from '@/lib/utils'
@@ -11,6 +12,7 @@ import {
 } from '@/data/mockData'
 
 const COLORS = ['#ff6b35', '#2d5a3d', '#1d4ed8', '#9333ea', '#f59e0b']
+const ANOS = ['2021', '2022', '2023', '2024', 'Todos']
 
 // Métricas consolidadas
 const metrics = {
@@ -21,12 +23,23 @@ const metrics = {
 }
 
 export function Dashboard() {
+  const [anoSelecionado, setAnoSelecionado] = useState('Todos')
+
   return (
     <div className="flex-1 space-y-6 p-4 md:p-8 pt-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <h2 className="text-3xl font-bold tracking-tight">Dashboard Comercial</h2>
-        <div className="text-sm text-muted-foreground">
-          Período: 2021-2024
+        <div className="flex items-center gap-2">
+          <label className="text-sm font-medium text-muted-foreground">Ano:</label>
+          <select 
+            value={anoSelecionado}
+            onChange={(e) => setAnoSelecionado(e.target.value)}
+            className="border border-border rounded-md px-3 py-2 text-sm bg-white"
+          >
+            {ANOS.map(ano => (
+              <option key={ano} value={ano}>{ano}</option>
+            ))}
+          </select>
         </div>
       </div>
 
