@@ -1,57 +1,46 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
-import { formatCurrency, formatNumber } from '@/lib/utils'
+import { formatCurrency, formatNumber, formatPercent } from '@/lib/utils'
 import { Users, TrendingUp, MapPin } from 'lucide-react'
+import type { RealData } from '@/types'
+import rawData from '@/data/realData.json'
 
-const ANOS = ['2021', '2022', '2023', '2024', 'Todos']
-const COLORS = ['#ff6b35', '#2d5a3d', '#1d4ed8', '#9333ea', '#f59e0b']
+const data = rawData as RealData
 
-// Dados por UF
-const clientesPorUF = [
-  { uf: 'MG', clientes: 892, toneladas: 298543, participacao: 71.2 },
-  { uf: 'SP', clientes: 178, toneladas: 87234, participacao: 20.1 },
-  { uf: 'RJ', clientes: 87, toneladas: 23456, participacao: 5.4 },
-  { uf: 'ES', clientes: 54, toneladas: 12987, participacao: 2.9 },
-  { uf: 'GO', clientes: 36, toneladas: 1912, participacao: 0.4 },
-]
-
-// Top 20 clientes expandido
-const clientesDetalhados = [
-  { cliente: 'Embare Indústrias Alimentícias', toneladas: 12543, faturamento: 18.8, contratos: 34, uf: 'MG', margem: 1.9 },
-  { cliente: 'Cooperativa Bom Despacho', toneladas: 10234, faturamento: 15.4, contratos: 28, uf: 'MG', margem: 2.1 },
-  { cliente: 'Rações RGL', toneladas: 8765, faturamento: 13.2, contratos: 25, uf: 'MG', margem: 1.8 },
-  { cliente: 'Femil Indústria e Comércio', toneladas: 7654, faturamento: 11.5, contratos: 22, uf: 'MG', margem: 2.0 },
-  { cliente: 'Campo Raiz Agronegócio', toneladas: 6543, faturamento: 9.8, contratos: 19, uf: 'MG', margem: 1.7 },
-  { cliente: 'Nutrirações Santa Rita', toneladas: 5987, faturamento: 9.1, contratos: 18, uf: 'SP', margem: 2.2 },
-  { cliente: 'Cooperativa Central Agroavícola', toneladas: 5432, faturamento: 8.2, contratos: 16, uf: 'MG', margem: 1.9 },
-  { cliente: 'Agropecuária Vale do Piranga', toneladas: 4876, faturamento: 7.4, contratos: 15, uf: 'MG', margem: 2.0 },
-  { cliente: 'Fazenda Santa Luzia', toneladas: 4321, faturamento: 6.5, contratos: 13, uf: 'SP', margem: 1.8 },
-  { cliente: 'Nutrição Animal Ltda', toneladas: 3987, faturamento: 6.0, contratos: 12, uf: 'MG', margem: 2.1 },
-  { cliente: 'Cooperativa Agroindustrial Bambuí', toneladas: 3654, faturamento: 5.5, contratos: 11, uf: 'MG', margem: 1.9 },
-  { cliente: 'Rações Premium Sul de Minas', toneladas: 3321, faturamento: 5.0, contratos: 10, uf: 'MG', margem: 2.0 },
-  { cliente: 'Agropecuária Triângulo Mineiro', toneladas: 2987, faturamento: 4.5, contratos: 9, uf: 'MG', margem: 1.8 },
-  { cliente: 'Fazenda Boa Vista', toneladas: 2765, faturamento: 4.2, contratos: 8, uf: 'SP', margem: 2.2 },
-  { cliente: 'Laticínios Serra da Canastra', toneladas: 2543, faturamento: 3.8, contratos: 8, uf: 'MG', margem: 1.7 },
-  { cliente: 'Nutrirações Passos', toneladas: 2321, faturamento: 3.5, contratos: 7, uf: 'MG', margem: 2.0 },
-  { cliente: 'Cooperativa Regional Formiga', toneladas: 2098, faturamento: 3.2, contratos: 6, uf: 'MG', margem: 1.9 },
-  { cliente: 'Agropecuária Rio Verde', toneladas: 1876, faturamento: 2.8, contratos: 6, uf: 'GO', margem: 2.1 },
-  { cliente: 'Fazenda Monte Alto', toneladas: 1654, faturamento: 2.5, contratos: 5, uf: 'RJ', margem: 1.8 },
-  { cliente: 'Rações Campo Alegre', toneladas: 1432, faturamento: 2.2, contratos: 5, uf: 'ES', margem: 2.0 },
-]
+const CORES = ['#ff6b35', '#2d5a3d', '#1d4ed8', '#9333ea', '#f59e0b']
+const ANOS = ['Todos', ...data.anosDisponiveis]
 
 export function Clientes() {
   const [anoSelecionado, setAnoSelecionado] = useState('Todos')
 
+  const d = useMemo(() => {
+    if (anoSelecionado === 'Todos') {
+      return {
+        metricas:      data.metricas,
+        topClientes:   data.topClientes,
+        clientesPorUF: data.clientesPorUF,
+      }
+    }
+    const ano = data.porAno[anoSelecionado]
+    return {
+      metricas:      ano.metricas,
+      topClientes:   ano.topClientes,
+      clientesPorUF: ano.clientesPorUF,
+    }
+  }, [anoSelecionado])
+
+  const totalUFs = d.clientesPorUF.length
+  const ufPrincipal = d.clientesPorUF[0]
+
   return (
     <div className="flex-1 space-y-6 p-4 md:p-8 pt-6">
-      {/* Header com filtro */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <h2 className="text-3xl font-bold tracking-tight">Clientes</h2>
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium text-muted-foreground">Ano:</label>
-          <select 
+          <select
             value={anoSelecionado}
             onChange={(e) => setAnoSelecionado(e.target.value)}
             className="border border-border rounded-md px-3 py-2 text-sm bg-white"
@@ -63,7 +52,7 @@ export function Clientes() {
         </div>
       </div>
 
-      {/* Métricas Principais */}
+      {/* KPIs */}
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -71,8 +60,8 @@ export function Clientes() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1.247</div>
-            <p className="text-xs text-muted-foreground mt-1">Base ativa consolidada</p>
+            <div className="text-2xl font-bold">{formatNumber(d.metricas.totalClientes, 0)}</div>
+            <p className="text-xs text-muted-foreground mt-1">Base ativa</p>
           </CardContent>
         </Card>
 
@@ -82,8 +71,8 @@ export function Clientes() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(544200)}</div>
-            <p className="text-xs text-success mt-1">+8.5% vs ano anterior</p>
+            <div className="text-2xl font-bold">{formatCurrency(d.metricas.ticketMedio)}</div>
+            <p className="text-xs text-muted-foreground mt-1">Por pedido</p>
           </CardContent>
         </Card>
 
@@ -93,33 +82,38 @@ export function Clientes() {
             <MapPin className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">5 UFs</div>
-            <p className="text-xs text-muted-foreground mt-1">Concentração em MG (71%)</p>
+            <div className="text-2xl font-bold">{totalUFs} UFs</div>
+            {ufPrincipal && (
+              <p className="text-xs text-muted-foreground mt-1">
+                Concentração em {ufPrincipal.uf} ({formatPercent(ufPrincipal.participacao)})
+              </p>
+            )}
           </CardContent>
         </Card>
       </div>
 
       {/* Gráficos */}
       <div className="grid gap-4 md:grid-cols-2">
-        {/* Top 10 por Volume */}
         <Card>
           <CardHeader>
             <CardTitle>Top 10 Clientes por Volume</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={clientesDetalhados.slice(0, 10)} layout="vertical">
+              <BarChart data={d.topClientes.slice(0, 10)} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis type="number" tick={{ fontSize: 12 }} stroke="#64748b" />
-                <YAxis dataKey="cliente" type="category" width={150} tick={{ fontSize: 11 }} stroke="#64748b" />
-                <Tooltip />
+                <XAxis type="number" tick={{ fontSize: 11 }} stroke="#64748b"
+                  tickFormatter={(v) => `${formatNumber(v / 1000, 0)}k`} />
+                <YAxis dataKey="cliente" type="category" width={150} tick={{ fontSize: 10 }} stroke="#64748b" />
+                <Tooltip
+                  formatter={(v: number) => [`${formatNumber(v, 0)} t`, 'Toneladas']}
+                />
                 <Bar dataKey="toneladas" fill="#ff6b35" name="Toneladas" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        {/* Distribuição por UF */}
         <Card>
           <CardHeader>
             <CardTitle>Distribuição Geográfica</CardTitle>
@@ -128,27 +122,31 @@ export function Clientes() {
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
-                  data={clientesPorUF}
+                  data={d.clientesPorUF.slice(0, 6)}
                   cx="50%"
                   cy="50%"
-                  labelLine={false}
-                  label={(entry: any) => `${entry.uf} (${entry.participacao}%)`}
                   outerRadius={100}
-                  fill="#8884d8"
                   dataKey="participacao"
+                  label={(entry) => `${entry.uf} (${entry.participacao.toFixed(1)}%)`}
+                  labelLine={false}
                 >
-                  {clientesPorUF.map((_entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  {d.clientesPorUF.slice(0, 6).map((_entry, index) => (
+                    <Cell key={`cell-${index}`} fill={CORES[index % CORES.length]} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip
+                  formatter={(v: number, _name, entry) => [
+                    `${formatNumber(entry.payload.toneladas, 0)} t (${formatPercent(v)})`,
+                    entry.payload.uf
+                  ]}
+                />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
       </div>
 
-      {/* Tabela Detalhada */}
+      {/* Tabela */}
       <Card>
         <CardHeader>
           <CardTitle>Ranking Completo de Clientes</CardTitle>
@@ -162,13 +160,13 @@ export function Clientes() {
                 <TableHead>UF</TableHead>
                 <TableHead className="text-right">Toneladas</TableHead>
                 <TableHead className="text-right">Faturamento</TableHead>
-                <TableHead className="text-right">Contratos</TableHead>
+                <TableHead className="text-right">Pedidos</TableHead>
                 <TableHead className="text-right">Margem</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {clientesDetalhados.map((c, idx) => (
-                <TableRow key={idx}>
+              {d.topClientes.map((c, idx) => (
+                <TableRow key={c.codCliente || idx}>
                   <TableCell className="font-medium">{idx + 1}</TableCell>
                   <TableCell>{c.cliente}</TableCell>
                   <TableCell>
@@ -177,9 +175,9 @@ export function Clientes() {
                     </span>
                   </TableCell>
                   <TableCell className="text-right">{formatNumber(c.toneladas, 0)}</TableCell>
-                  <TableCell className="text-right">{formatCurrency(c.faturamento * 1000000)}</TableCell>
+                  <TableCell className="text-right">{formatCurrency(c.faturamento)}</TableCell>
                   <TableCell className="text-right">{c.contratos}</TableCell>
-                  <TableCell className="text-right">{c.margem}%</TableCell>
+                  <TableCell className="text-right">{formatPercent(c.margem)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

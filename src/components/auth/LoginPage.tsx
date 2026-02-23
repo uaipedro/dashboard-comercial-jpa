@@ -6,7 +6,7 @@ interface LoginPageProps {
   onLogin: () => void
 }
 
-const SENHA_CORRETA = 'DashComercial!0'
+const SENHA_CORRETA = import.meta.env.VITE_DASHBOARD_PASSWORD as string
 
 export function LoginPage({ onLogin }: LoginPageProps) {
   const [senha, setSenha] = useState('')
@@ -14,7 +14,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (senha === SENHA_CORRETA) {
       localStorage.setItem('dashboard-jpa-auth', 'autenticado')
       onLogin()

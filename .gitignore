@@ -29,9 +29,8 @@ dist-ssr
 .env.production
 
 # Data
-data/raw/*.xlsb
-data/raw/*.xlsm
-data/raw/*.xlsx
+raw/
+data/raw/
 data/processed/
 
 # Build

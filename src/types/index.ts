@@ -1,61 +1,81 @@
-export interface Contrato {
-  id: string
-  codContrato: string
-  codPedido: string
+export interface VendaMes {
+  ano: number
+  mes: number
+  mesLabel: string
+  toneladas: number
+  faturamento: number
+}
+
+export interface VendaAno {
+  ano: string
+  toneladas: number
+  faturamento: number
+  margem: number
+}
+
+export interface Vendedor {
   vendedor: string
+  toneladas: number
+  faturamento: number
+  margem: number
+  contratos: number
+  clientes: number
+}
+
+export interface Cliente {
   cliente: string
   codCliente: number
-  produto: string
-  pesoTon: number
-  precoVendido: number
-  valorTotal: number
+  toneladas: number
+  faturamento: number
   margem: number
-  margemPercent: number
-  dataEmissao: string
-  prazoMedio: number
   uf: string
-  destino: string
-  status: 'ATIVO' | 'FINALIZADO' | 'CANCELADO'
+  contratos: number
 }
 
-export interface MetricasGerais {
-  totalContratos: number
-  totalClientes: number
-  totalToneladas: number
-  faturamentoTotal: number
-  margemMedia: number
-  ticketMedio: number
-}
-
-export interface VendedorPerformance {
-  vendedor: string
-  totalContratos: number
-  totalToneladas: number
-  faturamento: number
-  margemMedia: number
-  ticketMedio: number
-}
-
-export interface ProdutoResumo {
-  produto: string
-  totalToneladas: number
-  faturamento: number
+export interface ClienteUF {
+  uf: string
+  toneladas: number
+  clientes: number
   participacao: number
 }
 
-export interface ClienteResumo {
-  cliente: string
-  codCliente: number
-  totalContratos: number
-  totalToneladas: number
+export interface Produto {
+  produto: string
+  toneladas: number
   faturamento: number
-  uf: string
+  margem: number
+  participacao: number
+  contratos: number
+  precoMedio: number
 }
 
-export interface FiltrosData {
-  dataInicio?: string
-  dataFim?: string
-  vendedor?: string
-  produto?: string
-  uf?: string
+export interface Metricas {
+  totalToneladas: number
+  faturamentoTotal: number
+  margemTotal: number
+  margemMedia: number
+  totalClientes: number
+  totalContratos: number
+  ticketMedio: number
+}
+
+export interface DadosPorAno {
+  metricas: Metricas
+  vendasPorMes: VendaMes[]
+  topVendedores: Vendedor[]
+  topClientes: Cliente[]
+  clientesPorUF: ClienteUF[]
+  produtos: Produto[]
+}
+
+export interface RealData {
+  anosDisponiveis: string[]
+  metricas: Metricas
+  vendasPorMes: VendaMes[]
+  vendasPorAno: VendaAno[]
+  topVendedores: Vendedor[]
+  topClientes: Cliente[]
+  clientesPorUF: ClienteUF[]
+  produtos: Produto[]
+  porAno: Record<string, DadosPorAno>
 }
